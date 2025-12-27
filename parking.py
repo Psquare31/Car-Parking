@@ -30,7 +30,7 @@ class Ticket:
         
 
 slots = []
-rnpn_enterprises = ParkingLot(100, 100, slots, 100)
+rnpn_enterprises = ParkingLot(100, 100, slots, 0)
 
 
 for i in range(rnpn_enterprises.total_slot):
@@ -39,10 +39,18 @@ for i in range(rnpn_enterprises.total_slot):
 BMW = Car('BR06969', 'Jeep', '10:00 AM', '02:00 PM')
 
 
+def car_entry(slot, car, parkingLot):
+    slot.is_occupied = True
+    slot.car = car
+            
+    new_ticket = Ticket(slot.slot_id + 10, car.car_number, car.entry_time, car.entry_time)
+    parkingLot.active_ticket += 1
+    parkingLot.available_slot -= 1
+    
 if rnpn_enterprises.available_slot > 0:
     for i in rnpn_enterprises.slots:
-        if i.is_occupied == False:
-            i.is_occupied = True
+        if not i.is_occupied:
+            car_entry(i, BMW, rnpn_enterprises)
     
 else:
     print("Parking Lot is FULL..!!")
