@@ -53,5 +53,5 @@ if rnpn_enterprises.available_slot > 0:
             car_entry(i, BMW, rnpn_enterprises)
     
 else:
-    print("Parking Lot is FULL..!!")
+    print("Parking Lot is FULL..!! Jaam")
 
