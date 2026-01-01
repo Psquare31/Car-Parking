@@ -2,7 +2,7 @@ import time
 
 
 
-class Car:
+class Vehicle:
     def __init__(self, vehicle_number, vehicle_type, entry_time, estimated_exit_time):
         self.vehicle_number = vehicle_number
         self.vehicle_type = vehicle_type
@@ -22,6 +22,27 @@ class ParkingLot:
         self.available_slot = available_slot
         self.slots = slots
         self.active_ticket = active_ticket
+    
+    def vehicle_entry(slot, vehicle, parkingLot):
+        slot.is_occupied = True
+        slot.vehicle = vehicle
+        new_ticket = Ticket(slot.slot_id + 10, vehicle.vehicle_number, vehicle.entry_time, vehicle.entry_time)
+        tickets.append(new_ticket)
+        parkingLot.active_ticket += 1
+        parkingLot.available_slot -= 1
+        
+    def vehicle_exit(slot, vehicle, parkingLot):
+        global lock
+        slot.is_occupied = False
+        slot.vehicle = None
+        for ti in tickets:
+            if ti.slot_id == slot.slot_id:
+                del ti
+                break
+        parkingLot.active_ticket -= 1
+        parkingLot.available_slot += 1
+        lock = False
+    
         
 
 class Ticket:
@@ -43,32 +64,7 @@ for i in range(rnpn_enterprises.total_slot):
     slot = ParkingSlot(slot_id = i, is_occupied = False, vehicle = None)
     break
     
-
-def vehicle_entry(slot, vehicle, parkingLot):
-    slot.is_occupied = True
-    slot.vehicle = vehicle
-            
-    new_ticket = Ticket(slot.slot_id + 10, vehicle.vehicle_number, vehicle.entry_time, vehicle.entry_time)
-    tickets.append(new_ticket)
-    
-    parkingLot.active_ticket += 1
-    parkingLot.available_slot -= 1
-    
-def vehicle_exit(slot, vehicle, parkingLot):
-    global lock
-    
-    slot.is_occupied = False
-    slot.vehicle = None
-    
-    for ti in tickets:
-        if ti.slot_id == slot.slot_id:
-            del ti
-            break
-            
-    parkingLot.active_ticket -= 1
-    parkingLot.available_slot += 1
-    lock = False
-    
+   
 
 while not lock:
     if rnpn_enterprises.available_slot > 0:
@@ -80,7 +76,7 @@ while not lock:
                 estimated_exit_time = int(input("Enter Estimated Exit Time in Hours: "))
                 exit_time = vehicle_entry_time + (estimated_exit_time*3600)
     
-                new_Vehicle = Car(vehicle_number, vehicle_type, vehicle_entry_time, exit_time)
+                new_Vehicle = Vehicle(vehicle_number, vehicle_type, vehicle_entry_time, exit_time)
                 
                 vehicle_entry(i, new_Vehicle, rnpn_enterprises)
             else:
